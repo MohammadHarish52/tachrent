@@ -1,4 +1,5 @@
 import "@/assets/styles/globals.css";
+import Navbar from "@/components/Navbar";
 export const metadata = {
   title: "Tachrent | find your perfect Rental",
   description: "Tachrent - Your one-stop-shop for all your rental needs",
@@ -9,7 +10,8 @@ const MainLayout = ({ children }) => {
   return (
     <html lang="en">
       <body>
-        <div>{children}</div>
+        <Navbar />
+        <main>{children}</main>
       </body>
     </html>
   );
