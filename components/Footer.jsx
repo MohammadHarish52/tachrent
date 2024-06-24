@@ -1,6 +1,5 @@
 "use client";
 import Image from "next/image";
-import Link from "next/link";
 import logo from "@/assets/images/logo.png";
 
 const Footer = () => {
@@ -12,16 +11,7 @@ const Footer = () => {
         <div className="mb-4 md:mb-0">
           <Image src={logo} alt="Logo" className="h-8 w-auto" />
         </div>
-        <div className="flex flex-wrap justify-center md:justify-start mb-4 md:mb-0">
-          <ul className="flex space-x-4">
-            <li>
-              <Link href="/properties">Properties</Link>
-            </li>
-            <li>
-              <Link href="/terms">Terms of Service</Link>
-            </li>
-          </ul>
-        </div>
+
         <div>
           <p className="text-sm text-gray-500 mt-2 md:mt-0">
             &copy; {year} TachRent. All rights reserved.
