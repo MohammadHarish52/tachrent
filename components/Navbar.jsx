@@ -10,6 +10,7 @@ import { signIn, signOut, useSession, getProviders } from "next-auth/react";
 
 const Navbar = () => {
   const { data: session } = useSession();
+  const profileImage = session?.user?.image;
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
@@ -164,8 +165,10 @@ const Navbar = () => {
                     <span className="sr-only">Open user menu</span>
                     <Image
                       className="h-8 w-8 rounded-full"
-                      src={profileDefault}
+                      src={profileImage || profileDefault}
                       alt=""
+                      height={40}
+                      width={40}
                     />
                   </button>
                 </div>
@@ -185,6 +188,9 @@ const Navbar = () => {
                       role="menuitem"
                       tabIndex="-1"
                       id="user-menu-item-0"
+                      onClick={() => {
+                        setIsProfileMenuOpen((e) => !e);
+                      }}
                     >
                       Your Profile
                     </Link>
@@ -194,17 +200,24 @@ const Navbar = () => {
                       role="menuitem"
                       tabIndex="-1"
                       id="user-menu-item-2"
+                      onClick={() => {
+                        setIsProfileMenuOpen((e) => !e);
+                      }}
                     >
                       Saved Properties
                     </Link>
-                    <button
-                      className="block px-4 py-2 text-sm text-gray-700"
-                      role="menuitem"
-                      tabIndex="-1"
-                      id="user-menu-item-2"
-                    >
-                      Sign Out
-                    </button>
+                    {providers &&
+                      Object.values(providers).map((provider, index) => (
+                        <button
+                          onClick={() => signOut(provider.id)}
+                          className="block px-4 py-2 text-sm text-gray-700"
+                          role="menuitem"
+                          tabIndex="-1"
+                          id="user-menu-item-2"
+                        >
+                          Sign Out
+                        </button>
+                      ))}
                   </div>
                 )}
               </div>

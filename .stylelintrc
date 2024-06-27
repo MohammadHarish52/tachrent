@@ -3,5 +3,5 @@
     "at-rule-no-unknown": null
   },
 
-  "ignoreFiles": ["**/*.js", "**/*.jsx"]
+  "ignoreFiles": ["**/*.js", "**/*.jsx", "**/*.mjs"]
 }
