@@ -1,4 +1,4 @@
-import { fetchProperties } from "@/request";
+import { fetchProperties } from "@/utils/request";
 import NewPropertyCard from "./NewPropertyCard";
 import Link from "next/link";
 
