@@ -35,9 +35,60 @@ const PropertyaddForm = () => {
     setMounted(true);
   }, []);
 
-  const handleChange = () => {};
-  const handleamenitiesChange = () => {};
-  const handleImageChange = () => {};
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    console.log(name, value);
+    // check for nested property
+    if (name.includes(".")) {
+      const [outerKey, innerKey] = name.split(".");
+
+      setFields((prevFields) => ({
+        ...prevFields,
+        [outerKey]: {
+          ...prevFields[outerKey],
+          [innerKey]: value,
+        },
+      }));
+    }
+    // not nested
+    else {
+      setFields((prevFields) => ({
+        ...prevFields,
+        [name]: value,
+      }));
+    }
+  };
+  const handleamenitiesChange = (e) => {
+    const { value, checked } = e.target;
+    console.log(value, checked);
+    // clone the current amenities array
+    const updatedAmenities = [...fields.amenities];
+    if (checked) {
+      // add value to the array
+      updatedAmenities.push(value);
+    } else {
+      // remove value from the array
+      const index = updatedAmenities.indexOf(value);
+      if (index > -1) updatedAmenities.splice(index, 1);
+    }
+    // update state with updated array
+    setFields((prevFields) => ({
+      ...prevFields,
+      amenities: updatedAmenities,
+    }));
+  };
+  const handleImageChange = (e) => {
+    const { files } = e.target;
+    const updatedImages = [...fields.images];
+    Array.from(files).forEach((file) => {
+      updatedImages.push(URL.createObjectURL(file));
+    });
+    // update state with updated array
+    setFields((prevFields) => ({
+      ...prevFields,
+      images: updatedImages,
+    }));
+  };
 
   return (
     mounted && (
@@ -56,6 +107,7 @@ const PropertyaddForm = () => {
             className="border rounded w-full py-2 px-3"
             required
             value={fields.type}
+            onChange={handleChange}
           >
             <option value="Apartment">Apartment</option>
             <option value="Condo">Condo</option>
