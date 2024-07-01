@@ -1,3 +1,4 @@
+import cloudinary from "@/config/cloudinary";
 import connectDB from "@/config/db";
 import Property from "@/models/Property";
 import { getSessionUser } from "@/utils/getSessionUser";
@@ -46,14 +47,14 @@ export const POST = async (request) => {
         zipcode: formData.get("location.zipcode"),
       },
 
-      beds: parseInt(formData.get("beds")),
-      baths: parseInt(formData.get("baths")),
-      square_feet: parseInt(formData.get("square_feet")),
+      beds: formData.get("beds"),
+      baths: formData.get("baths"),
+      square_feet: formData.get("square_feet"),
       amenities,
       rates: {
-        nightly: parseInt(formData.get("rates.nightly")),
-        weekly: parseInt(formData.get("rates.weekly")),
-        monthly: parseInt(formData.get("rates.monthly")),
+        nightly: formData.get("rates.nightly"),
+        weekly: formData.get("rates.weekly"),
+        monthly: formData.get("rates.monthly"),
       },
       seller_info: {
         name: formData.get("seller_info.name"),
@@ -64,11 +65,35 @@ export const POST = async (request) => {
       // images,
     };
 
+    // upload images to cloudinary
+    const imageUploadPromises = [];
+    for (const image of images) {
+      const imageBuffer = await image.arrayBuffer();
+      const imageArray = Array.from(new Uint8Array(imageBuffer));
+      const imageData = Buffer.from(imageArray);
+
+      // Convert image to base64
+      const imageBase64 = imageData.toString("base64");
+
+      // Make request to upload to cloudinary
+      const result = await cloudinary.uploader.upload(
+        `data:image/png;base64,${imageBase64}`,
+        { folder: "TachRent" }
+      );
+      imageUploadPromises.push(result.secure_url);
+
+      // wait  for all images to upload
+      const uploadedImages = await Promise.all(imageUploadPromises);
+
+      // add uploaded images to the property object
+      propertyData.images = uploadedImages;
+    }
+
     const newProperty = new Property(propertyData);
     await newProperty.save();
 
     // return new Response(JSON.stringify({ message: "Success", status: 200 }));
-    return new Response.redirect(
+    return Response.redirect(
       `${process.env.NEXTAUTH_URL}/properties/${newProperty._id}`
     );
   } catch (error) {
